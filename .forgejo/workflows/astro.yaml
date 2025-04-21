@@ -39,10 +39,10 @@ jobs:
       #?? [<host>]:<port> <public key>
       - name: Import ssh keys
         run: |
-          mkdir --parents --mode=0700 ~/.ssh
+          mkdir --verbose --parents --mode=0700 ~/.ssh
           cd ~/.ssh
           touch id_ed25519 known_hosts
-          chmod 0600 *
+          chmod --verbose 0600 *
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_ed25519
           echo "[${{ vars.SSH_HOST }}]:${{ vars.SSH_HOST_PORT }} ${{ vars.SSH_HOST_PUBLIC_KEY }}" > known_hosts
           cd -
@@ -59,9 +59,12 @@ jobs:
 
       - name: Overwrite running site
         run: |
-          ssh \
-            ssh://srv@${{ vars.SSH_HOST }}:${{ vars.SSH_HOST_PORT }} \
-            mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
+          ssh ssh://srv@${{ vars.SSH_HOST }}:${{ vars.SSH_HOST_PORT }} \
+            mv \
+              --verbose \
+              --no-target-directory \
+              /srv/sites/${{ vars.DOMAIN }}.new \
+              /srv/sites/${{ vars.DOMAIN }}
 
       - name: Shred private key
-        run: shred ~/.ssh/id_ed25519
+        run: shred --verbose ~/.ssh/id_ed25519
