@@ -55,7 +55,8 @@ jobs:
             --verbose \
             --delete \
             --recursive \
-            ./dist/ srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist/ \
+            srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
@@ -63,6 +64,7 @@ jobs:
             mv \
               --verbose \
               --no-target-directory \
+              --force \
               /srv/sites/${{ vars.DOMAIN }}.new \
               /srv/sites/${{ vars.DOMAIN }}
 
