@@ -23,7 +23,9 @@ jobs:
 
       # https://docs.astro.build/en/guides/deploy/
       - name: Generate Astro site
-        run: npm run build
+        run: |
+          npm install
+          npm run build
 
       - name: Create private key
         run: |
