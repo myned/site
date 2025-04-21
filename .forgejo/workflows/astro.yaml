@@ -7,6 +7,7 @@
 # https://forgejo.org/docs/latest/user/actions/#variables
 # vars:
 #   DOMAIN
+#   SSH_HOST
 #   SSH_HOST_PORT
 #   SSH_HOST_PUBLIC_KEY #?? ssh-keyscan -p <port> <host>
 
@@ -34,6 +35,8 @@ jobs:
       - name: Generate site
         run: npm run build
 
+      # https://www.ibm.com/docs/en/zos/3.1.0?topic=daemon-ssh-known-hosts-file-format
+      #?? [<host>]:<port> <public key>
       - name: Import ssh keys
         run: |
           mkdir --parents --mode=0700 ~/.ssh
@@ -41,7 +44,7 @@ jobs:
           touch id_ed25519 known_hosts
           chmod 0600 *
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_ed25519
-          echo "${{ vars.SSH_HOST_PUBLIC_KEY }}" > known_hosts
+          echo "[${{ vars.SSH_HOST }}]:${{ vars.SSH_HOST_PORT }} ${{ vars.SSH_HOST_PUBLIC_KEY }}" > known_hosts
           cd -
 
       - name: Copy site to server
@@ -51,12 +54,12 @@ jobs:
             --info=progress2 \
             --verbose \
             --recursive \
-            ./dist srv@${{ vars.DOMAIN }}:/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
           ssh \
-            ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_HOST_PORT }} \
+            ssh://srv@${{ vars.SSH_HOST }}:${{ vars.SSH_HOST_PORT }} \
             mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
 
       - name: Shred private key
