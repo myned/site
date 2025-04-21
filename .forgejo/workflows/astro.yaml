@@ -2,12 +2,13 @@
 
 # https://forgejo.org/docs/latest/user/actions/#secrets
 # secrets:
-#   SSH_PRIVATE_KEY
+#   SSH_PRIVATE_KEY #?? ssh-keygen -t ed25519 -f ./srv -N '' -C ''
 
 # https://forgejo.org/docs/latest/user/actions/#variables
 # vars:
-#   SSH_PORT
 #   DOMAIN
+#   SSH_HOST_PORT
+#   SSH_HOST_PUBLIC_KEY #?? ssh-keyscan -p <port> <host>
 
 on:
   push:
@@ -20,7 +21,8 @@ jobs:
 
     steps:
       # https://code.forgejo.org/actions/checkout
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -28,32 +30,29 @@ jobs:
           apt install -y rsync
 
       # https://docs.astro.build/en/guides/deploy/
-      - name: Generate Astro site
+      - name: Generate site
         run: |
           npm install
           npm run build
 
-      - name: Create private key
+      - name: Import ssh keys
         run: |
-          touch /tmp/ssh.key
-          chmod 0600 /tmp/ssh.key
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh.key
+          mkdir -p ~/.ssh
+          touch ~/.ssh/id_ed25519
+          chmod 0600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "${{ vars.SSH_HOST_PUBLIC_KEY }}" > ~/.ssh/authorized_keys
 
       - name: Copy site to server
         run: |
           rsync \
-            --rsh="ssh -i /tmp/ssh.key" \
             --info=progress2 \
             --verbose \
             --recursive \
-            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_HOST_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
           ssh \
-            -i /tmp/ssh.key \
-            ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }} \
+            ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_HOST_PORT }} \
             mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
-
-      - name: Shred private key
-        run: shred /tmp/ssh.key
