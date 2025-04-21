@@ -46,7 +46,7 @@ jobs:
             --info=progress2 \
             --verbose \
             --recursive \
-            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}:/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
