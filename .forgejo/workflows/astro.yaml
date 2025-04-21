@@ -46,10 +46,11 @@ jobs:
       - name: Copy site to server
         run: |
           rsync \
+            --rsh="ssh -p ${{ vars.SSH_HOST_PORT }}" \
             --info=progress2 \
             --verbose \
             --recursive \
-            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_HOST_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist srv@${{ vars.DOMAIN }}:/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
