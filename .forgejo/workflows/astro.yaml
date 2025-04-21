@@ -50,23 +50,29 @@ jobs:
       - name: Copy site to server
         run: |
           rsync \
-            --rsh="ssh -p ${{ vars.SSH_HOST_PORT }}" \
-            --info=progress2 \
             --verbose \
             --delete \
             --recursive \
+            --info=progress2 \
+            --rsh="ssh -p ${{ vars.SSH_HOST_PORT }}" \
             ./dist/ \
             srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
-          ssh ssh://srv@${{ vars.SSH_HOST }}:${{ vars.SSH_HOST_PORT }} \
+          ssh ssh://srv@${{ vars.SSH_HOST }}:${{ vars.SSH_HOST_PORT }} '
+            rm \
+              --verbose \
+              --recursive \
+              --force \
+              /srv/sites/${{ vars.DOMAIN }}
+
             mv \
               --verbose \
               --no-target-directory \
-              --force \
               /srv/sites/${{ vars.DOMAIN }}.new \
               /srv/sites/${{ vars.DOMAIN }}
+          '
 
       - name: Shred private key
         run: shred --verbose ~/.ssh/id_ed25519
