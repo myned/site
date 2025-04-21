@@ -53,7 +53,6 @@ jobs:
             --verbose \
             --delete \
             --recursive \
-            --info=progress2 \
             --rsh="ssh -p ${{ vars.SSH_HOST_PORT }}" \
             ./dist/ \
             srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
