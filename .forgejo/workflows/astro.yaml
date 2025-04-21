@@ -53,8 +53,9 @@ jobs:
             --rsh="ssh -p ${{ vars.SSH_HOST_PORT }}" \
             --info=progress2 \
             --verbose \
+            --delete \
             --recursive \
-            ./dist srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
+            ./dist/ srv@${{ vars.SSH_HOST }}:/srv/sites/${{ vars.DOMAIN }}.new
 
       - name: Overwrite running site
         run: |
