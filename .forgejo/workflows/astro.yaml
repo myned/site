@@ -1,4 +1,5 @@
 # https://forgejo.org/docs/latest/user/actions/
+
 # https://forgejo.org/docs/latest/user/actions/#secrets
 # secrets:
 #   SSH_PRIVATE_KEY
@@ -21,6 +22,11 @@ jobs:
       # https://code.forgejo.org/actions/checkout
       - uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y rsync
+
       # https://docs.astro.build/en/guides/deploy/
       - name: Generate Astro site
         run: |
@@ -33,10 +39,20 @@ jobs:
           chmod 0600 /tmp/ssh.key
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh.key
 
-      - name: Copy site to server and replace
+      - name: Copy site to server
         run: |
-          sftp -i /tmp/ssh.key ./dist sftp://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
-          ssh -i /tmp/ssh.key ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }} \
+          rsync \
+            --rsh="ssh -i /tmp/ssh.key" \
+            --info=progress2 \
+            --verbose \
+            --recursive \
+            ./dist rsync://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}:/srv/sites/${{ vars.DOMAIN }}.new
+
+      - name: Overwrite running site
+        run: |
+          ssh \
+            -i /tmp/ssh.key \
+            ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }} \
             mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
 
       - name: Shred private key
