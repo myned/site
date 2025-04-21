@@ -28,18 +28,17 @@ jobs:
         run: |
           apt update
           apt install -y rsync
+          npm install
 
       # https://docs.astro.build/en/guides/deploy/
       - name: Generate site
-        run: |
-          npm install
-          npm run build
+        run: npm run build
 
       - name: Import ssh keys
         run: |
-          mkdir -p ~/.ssh
-          touch ~/.ssh/id_ed25519
-          chmod 0600 ~/.ssh/id_ed25519
+          mkdir --parents --mode=0700 ~/.ssh
+          touch ~/.ssh/id_ed25519 ~/.ssh/authorized_keys
+          chmod 0600 ~/.ssh/*
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           echo "${{ vars.SSH_HOST_PUBLIC_KEY }}" > ~/.ssh/authorized_keys
 
@@ -57,3 +56,6 @@ jobs:
           ssh \
             ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_HOST_PORT }} \
             mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
+
+      - name: Shred private key
+        run: shred ~/.ssh/id_ed25519
