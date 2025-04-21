@@ -1,0 +1,41 @@
+# https://forgejo.org/docs/latest/user/actions/
+# https://forgejo.org/docs/latest/user/actions/#secrets
+# secrets:
+#   SSH_PRIVATE_KEY
+
+# https://forgejo.org/docs/latest/user/actions/#variables
+# vars:
+#   SSH_PORT
+#   DOMAIN
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: docker # https://hub.docker.com/_/node/tags?name=16-bullseye
+
+    steps:
+      # https://code.forgejo.org/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://docs.astro.build/en/guides/deploy/
+      - name: Generate Astro site
+        run: npm run build
+
+      - name: Create private key
+        run: |
+          touch /tmp/ssh.key
+          chmod 0600 /tmp/ssh.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh.key
+
+      - name: Copy site to server and replace
+        run: |
+          sftp -i /tmp/ssh.key ./dist sftp://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }}/srv/sites/${{ vars.DOMAIN }}.new
+          ssh -i /tmp/ssh.key ssh://srv@${{ vars.DOMAIN }}:${{ vars.SSH_PORT }} \
+            mv /srv/sites/${{ vars.DOMAIN }}.new /srv/sites/${{ vars.DOMAIN }}
+
+      - name: Shred private key
+        run: shred /tmp/ssh.key
