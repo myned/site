@@ -1,0 +1,7 @@
+# https://prettier.io/docs/options
+# https://docs.astro.build/en/editor-setup/#prettier
+plugins: [prettier-plugin-astro]
+overrides:
+  - files: "*.astro"
+    options:
+      parser: astro
