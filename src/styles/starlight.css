@@ -1,0 +1,59 @@
+/* https://starlight.astro.build/guides/css-and-tailwind/ */
+
+@layer overrides {
+  :root {
+    /* Use solarized colors */
+    --sl-color-white: var(--color-solar-base2);
+    --sl-color-gray-1: var(--color-solar-base1);
+    --sl-color-gray-2: var(--color-solar-base0);
+    --sl-color-gray-3: var(--color-solar-base00);
+    --sl-color-gray-4: var(--color-solar-base01);
+    --sl-color-gray-5: color-mix(in oklch, var(--color-solar-base01), var(--color-solar-base02) 50%);
+    --sl-color-gray-6: var(--color-solar-base03);
+    --sl-color-black: var(--color-solar-base02);
+    --sl-color-accent-low: var(--sl-color-black);
+    --sl-color-accent: var(--color-solar-magenta);
+    --sl-color-accent-high: var(--sl-color-accent);
+
+    /* Disable all shadows */
+    --sl-shadow-sm: none;
+    --sl-shadow-md: none;
+    --sl-shadow-lg: none;
+
+    /* Lower sidebar width */
+    --sl-sidebar-width: 15rem;
+  }
+
+  /* Right-align right sidebar */
+  .right-sidebar {
+    border-inline: none;
+    text-align: end;
+  }
+
+  /* Colorize headers */
+  .sl-markdown-content {
+    h1 {
+      color: var(--color-solar-red);
+    }
+
+    h2 {
+      color: var(--color-solar-orange);
+    }
+
+    h3 {
+      color: var(--color-solar-yellow);
+    }
+
+    h4 {
+      color: var(--color-solar-green);
+    }
+
+    h5 {
+      color: var(--color-solar-cyan);
+    }
+
+    h6 {
+      color: var(--color-solar-blue);
+    }
+  }
+}

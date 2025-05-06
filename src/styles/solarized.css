@@ -1,0 +1,39 @@
+/* https://tailwindcss.com/docs/colors */
+
+@theme {
+  /* https://ethanschoonover.com/solarized/ */
+  --color-solar-base03: oklch(26.73% 0.049 219.82);
+  --color-solar-base02: oklch(30.92% 0.052 219.65);
+  --color-solar-base01: oklch(52.3% 0.028 219.14);
+  --color-solar-base00: oklch(56.82% 0.029 221.9);
+  --color-solar-base0: oklch(65.37% 0.02 205.26);
+  --color-solar-base1: oklch(69.79% 0.016 196.79);
+  --color-solar-base2: oklch(93.06% 0.026 92.4);
+  --color-solar-base3: oklch(97.35% 0.026 90.1);
+  --color-solar-yellow: oklch(65.45% 0.134 85.72);
+  --color-solar-orange: oklch(58.08% 0.173 39.5);
+  --color-solar-red: oklch(58.63% 0.206 27.12);
+  --color-solar-magenta: oklch(59.24% 0.202 355.89);
+  --color-solar-violet: oklch(58.23% 0.126 279.1);
+  --color-solar-blue: oklch(61.49% 0.139 244.93);
+  --color-solar-cyan: oklch(64.37% 0.102 187.38);
+  --color-solar-green: oklch(64.44% 0.151 118.6);
+
+  /* https://meat.io/oksolar */
+  --color-oksolar-base03: oklch(27.4% 0.05 219.6);
+  --color-oksolar-base02: oklch(32.1% 0.053 219.6);
+  --color-oksolar-base01: oklch(53.5% 0.029 219.6);
+  --color-oksolar-base00: oklch(54.4% 0.017 219.6);
+  --color-oksolar-base0: oklch(71.8% 0.017 198);
+  --color-oksolar-base1: oklch(71.8% 0.03 198);
+  --color-oksolar-base2: oklch(93.4% 0.031 90);
+  --color-oksolar-base3: oklch(97.7% 0.012 90);
+  --color-oksolar-yellow: oklch(63.1% 0.129 86.4);
+  --color-oksolar-orange: oklch(63.1% 0.166 50.4);
+  --color-oksolar-red: oklch(63.1% 0.221 21.6);
+  --color-oksolar-magenta: oklch(63.1% 0.205 349.2);
+  --color-oksolar-violet: oklch(63.1% 0.121 280.8);
+  --color-oksolar-blue: oklch(63.1% 0.141 244.8);
+  --color-oksolar-cyan: oklch(63.1% 0.102 187.2);
+  --color-oksolar-green: oklch(63.1% 0.148 118.8);
+}

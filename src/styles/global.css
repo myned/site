@@ -1,0 +1,17 @@
+/* https://tailwindcss.com/ */
+
+@layer base, starlight, theme, components, utilities, overrides;
+
+@import "tailwindcss";
+@import "@astrojs/starlight-tailwind";
+@import "@/styles/starlight.css";
+@import "@/styles/daisyui.css";
+@import "@/styles/solarized.css";
+
+/* https://tailwindcss.com/docs/theme */
+/* https://tailwindcss.com/docs/theme#default-theme-variable-reference */
+@theme {
+  --font-mono: monospace;
+  --font-sans: sans-serif;
+  --font-serif: serif;
+}

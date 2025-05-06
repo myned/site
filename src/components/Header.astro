@@ -1,0 +1,10 @@
+---
+import Navigation from "@/components/Navigation.astro";
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<header class={className} {...rest}>
+  <Navigation />
+  <slot />
+</header>

@@ -1,0 +1,46 @@
+/* https://daisyui.com/docs/install/astro/ */
+
+@plugin "daisyui";
+
+/*
+https://daisyui.com/theme-generator/#theme=eJyVlPFqgzAQxl9FhMEG9TAxUbO3SfVcZdZIoqzb2LsvPW2broXOP3P3-758d4R8x73eY_waO9Np235hHW_iJLG6bieXOOywGo31fW5xH7aaFrv6Tn1rDmHVecvQJgUur3onn7CxNbZGunQ4UKHGYdwdITr1pnW4nCrTGZu4aoc0Ra3tOzFzfasdJixNfce8d9XumedQZE9RCqlQEWcKSv7yl-cBn6WgOPGSE5_LGz5byVemH7Efz5pcQaFIw_KIKZ9QhZoep9Hq7oxLDvMEvKQbmLhD31zyYPC2b8wlEANBgVjmWSFAZSHrpqpC5y64ACEIlyxirIQ8pD-07dv-7UJLEHI2F1EpobjKgdbSM1lG9V4Umqd5xAtgN5nXzrlkXytbhlgro2nWigbb7rX9vCxBARfzEniUSQnl1fNw6P3rK0EJnPwZP27Nv5CQ134BQZgH7kuY1Ws-hVornNP9V1Vjo6fOY6OdcBMPFhu0jv4AKv38AjilXGs
+*/
+@plugin "daisyui/theme" {
+  name: "solarized";
+  color-scheme: "dark";
+  prefersdark: true;
+  default: true;
+
+  --color-base-100: var(--color-solar-base02);
+  --color-base-200: color-mix(
+    in oklch,
+    var(--color-solar-base02),
+    var(--color-solar-base03) 50%
+  );
+  --color-base-300: var(--color-solar-base03);
+  --color-base-content: var(--color-solar-base1);
+  --color-primary: var(--color-solar-base1);
+  --color-primary-content: var(--color-solar-base03);
+  --color-secondary: var(--color-solar-violet);
+  --color-secondary-content: var(--color-solar-base03);
+  --color-accent: var(--color-solar-magenta);
+  --color-accent-content: var(--color-solar-base03);
+  --color-neutral: var(--color-solar-base01);
+  --color-neutral-content: var(--color-solar-base03);
+  --color-info: var(--color-solar-blue);
+  --color-info-content: var(--color-solar-base03);
+  --color-success: var(--color-solar-green);
+  --color-success-content: var(--color-solar-base03);
+  --color-warning: var(--color-solar-yellow);
+  --color-warning-content: var(--color-solar-base03);
+  --color-error: var(--color-solar-red);
+  --color-error-content: var(--color-solar-base03);
+  --radius-selector: 2rem;
+  --radius-field: 2rem;
+  --radius-box: 2rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 0;
+  --noise: 0;
+}

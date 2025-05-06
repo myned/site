@@ -1,0 +1,15 @@
+---
+const { class: className, ...rest } = Astro.props;
+---
+
+<nav class={`navbar ${className}`} {...rest}>
+  <div class="navbar-start">
+    <a class="btn btn-square btn-ghost" href="/">
+      <img src="/favicon.svg" alt="Logo" />
+    </a>
+  </div>
+  <div class="navbar-end gap-1">
+    <a class="btn" href="/wiki">Wiki</a>
+    <a class="btn" href="https://status.bjork.tech">Status</a>
+  </div>
+</nav>
