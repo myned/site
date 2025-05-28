@@ -1,0 +1,41 @@
+---
+// https://github.com/Eyevinn/webrtc-player
+// TODO: Change TURN server
+---
+
+<div class="content-center h-full bg-base-300">
+  <h1 id="offline" class="hidden text-center text-2xl font-bold">Offline</h1>
+  <video class="object-top h-full" autoplay controls></video>
+</div>
+
+<script>
+  import { WebRTCPlayer } from "@eyevinn/webrtc-player";
+
+  const offline = document.querySelector<HTMLHeadingElement>("#offline");
+  const video = document.querySelector("video");
+
+  if (offline && video) {
+    const player = new WebRTCPlayer({
+      video: video,
+      type: "whep",
+      statsTypeFilter: "^inbound-rtp$", // RegEx
+      timeoutThreshold: 5 * 1000, // Milliseconds
+    });
+
+    await player.load(
+      new URL(
+        "https://stream.vpn.bjork.tech/rtc/v1/whep/?app=live&stream=livestream",
+      ),
+    );
+
+    player.on("media-recovered", () => {
+      offline.classList.add("hidden");
+      video.classList.remove("hidden");
+    });
+
+    player.on("no-media", () => {
+      offline.classList.remove("hidden");
+      video.classList.add("hidden");
+    });
+  }
+</script>
