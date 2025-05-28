@@ -17,6 +17,7 @@
   if (offline && video) {
     const player = new WebRTCPlayer({
       video: video,
+      iceServers: [{ urls: "stun:stun.bjork.tech:3478" }],
       type: "whep",
       statsTypeFilter: "^inbound-rtp$", // RegEx
       timeoutThreshold: 5 * 1000, // Milliseconds
