@@ -83,8 +83,6 @@ const { class: className, ...rest } = Astro.props;
       let retry: NodeJS.Timeout;
 
       player.on("stateChanged", (event) => {
-        console.log(event.newstate);
-
         switch (event.newstate) {
           case "error":
             // Toggle elements when offline
