@@ -1,0 +1,123 @@
+---
+// https://airensoft.gitbook.io/ovenplayer
+// https://github.com/AirenSoft/OvenPlayer
+// https://github.com/video-dev/hls.js
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<div id="player-container" class:list={["relative", className]} {...rest}>
+  <div id="player"></div>
+  <h1 id="offline" class="hidden absolute top-1/2 left-1/2 -translate-1/2 text-center text-2xl font-bold">Offline</h1>
+</div>
+
+<style is:global>
+  #player-container {
+    --op-accent-color: var(--color-accent);
+  }
+
+  #player {
+    background: var(--color-base-300);
+  }
+
+  .op-clear {
+    font-family: var(--font-sans) !important;
+  }
+
+  .op-gradient-bottom {
+    background: none !important;
+  }
+
+  .op-message-box,
+  .op-progressbar,
+  .op-setting-item[op-panel-type="speed"] {
+    display: none !important;
+  }
+</style>
+
+<script>
+  import Hls from "hls.js";
+  import OvenPlayer from "ovenplayer";
+
+  declare global {
+    interface Window {
+      Hls: object;
+    }
+  }
+
+  window.Hls = Hls; // Serve from embedded module instead of CDN
+
+  const timeout = 5 * 1000; // Milliseconds
+
+  const player = OvenPlayer.create("player", {
+    autoFallback: false,
+    autoStart: true,
+    disableSeekUI: true,
+    expandFullScreenUI: false,
+    showBigPlayButton: false,
+    playbackRates: [1], // Disable playback rate options, element hidden in styles
+    sources: [
+      // Prefer WebRTC over LLHLS
+      {
+        label: "WebRTC",
+        type: "webrtc",
+        file: "ws://localhost:3333/live/stream/adaptive",
+      },
+      {
+        label: "LLHLS",
+        type: "llhls",
+        file: "http://localhost:3333/live/stream/adaptive.m3u8",
+      },
+    ],
+    webrtcConfig: {
+      connectionTimeout: timeout,
+    },
+  });
+
+  // Wait for player API to be ready
+  player.on("ready", () => {
+    const offline = document.querySelector("#offline");
+
+    if (offline) {
+      let retry: NodeJS.Timeout;
+
+      player.on("stateChanged", (event) => {
+        console.log(event.newstate);
+
+        switch (event.newstate) {
+          case "error":
+            // Toggle elements when offline
+            player.getMediaElement().classList.add("hidden");
+            offline.classList.remove("hidden");
+          case "loading":
+          case "stalled":
+            // Force retry after timeout
+            retry = setTimeout(() => {
+              player.stop(); // Stop player to avoid infinite loading state
+              player.play();
+            }, timeout);
+            break;
+          case "playing":
+            clearTimeout(retry); // Ensure retry timer is cleared
+
+            // Toggle elements when online
+            offline.classList.add("hidden");
+            player.getMediaElement().classList.remove("hidden");
+            break;
+          case "paused":
+            // BUG: LLHLS stop() causes stalled state until next release
+            // https://github.com/AirenSoft/OvenPlayer/issues/454
+            player.stop(); // Stop player to avoid extraneous network usage
+            break;
+        }
+      });
+    }
+
+    // Toggle play/pause on video element click
+    player.on("clicked", (event) => {
+      if (event.target == player.getMediaElement()) {
+        player.getState() === "paused" ? player.play() : player.pause();
+      }
+    });
+  });
+</script>

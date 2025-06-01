@@ -1,11 +1,12 @@
 ---
 // https://github.com/Eyevinn/webrtc-player
-// TODO: Change TURN server
+
+const { class: className, ...rest } = Astro.props;
 ---
 
-<div class="content-center h-full bg-base-300">
-  <h1 id="offline" class="hidden text-center text-2xl font-bold">Offline</h1>
+<div class:list={["content-center", "h-full", "bg-base-300", className]} {...rest}>
   <video class="object-top size-full" autoplay controls></video>
+  <h1 id="offline" class="hidden text-center text-2xl font-bold">Offline</h1>
 </div>
 
 <script>
@@ -23,11 +24,7 @@
       timeoutThreshold: 5 * 1000, // Milliseconds
     });
 
-    await player.load(
-      new URL(
-        "https://stream.vpn.bjork.tech/rtc/v1/whep/?app=live&stream=livestream",
-      ),
-    );
+    await player.load(new URL("https://stream.vpn.bjork.tech/rtc/v1/whep/?app=live&stream=livestream"));
 
     player.on("media-recovered", () => {
       offline.classList.add("hidden");
@@ -35,8 +32,8 @@
     });
 
     player.on("no-media", () => {
-      offline.classList.remove("hidden");
       video.classList.add("hidden");
+      offline.classList.remove("hidden");
     });
   }
 </script>
