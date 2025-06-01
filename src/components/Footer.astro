@@ -2,12 +2,11 @@
 const { class: className, ...rest } = Astro.props;
 ---
 
-<footer class={`footer footer-center py-8 ${className}`} {...rest}>
+<footer class:list={["footer", "footer-center", "py-8", className]} {...rest}>
   <p class="inline">
-    Made by <a
+    Made by <a class="link link-hover" href="https://matrix.to/#/@myned:bjork.tech">@myned</a>, built with <a
       class="link link-hover"
-      href="https://matrix.to/#/@myned:bjork.tech">@myned</a
-    >, built with <a class="link link-hover" href="https://astro.build">
+      href="https://astro.build">
       {Astro.generator}
     </a>
   </p>

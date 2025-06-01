@@ -2,7 +2,7 @@
 const { class: className, ...rest } = Astro.props;
 ---
 
-<nav class={`navbar ${className}`} {...rest}>
+<nav class:list={["navbar", className]} {...rest}>
   <div class="navbar-start">
     <a class="btn btn-square btn-ghost" href="/">
       <img src="/favicon.svg" alt="Logo" />
