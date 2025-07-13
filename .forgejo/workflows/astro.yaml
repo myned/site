@@ -9,7 +9,7 @@
 #   DOMAIN
 #   SSH_HOST
 #   SSH_HOST_PORT
-#   SSH_HOST_PUBLIC_KEY #?? ssh-keyscan -p <port> <host>
+#   SSH_KNOWN_HOST #?? ssh-keyscan -p <port> <host>
 
 on:
   push:
@@ -44,7 +44,7 @@ jobs:
           touch id_ed25519 known_hosts
           chmod --verbose 0600 *
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_ed25519
-          echo "[${{ vars.SSH_HOST }}]:${{ vars.SSH_HOST_PORT }} ${{ vars.SSH_HOST_PUBLIC_KEY }}" > known_hosts
+          echo "${{ vars.SSH_KNOWN_HOST }}" > known_hosts
           cd -
 
       - name: Copy site to server
