@@ -3,7 +3,7 @@
 // https://github.com/AirenSoft/OvenPlayer
 // https://github.com/video-dev/hls.js
 
-const { class: className, ...rest } = Astro.props;
+const { class: className, ...rest } = Astro.props
 ---
 
 <div id="player-container" class:list={["relative", className]} {...rest}>
@@ -12,111 +12,141 @@ const { class: className, ...rest } = Astro.props;
 </div>
 
 <style is:global>
+  * {
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    text-shadow: none !important;
+  }
+
   #player-container {
-    --op-accent-color: var(--color-accent);
+    --op-accent-color: var(--color-accent) !important;
   }
 
   #player {
-    background: var(--color-base-300);
+    background: var(--color-base-300) !important;
   }
 
-  .op-clear {
-    font-family: var(--font-sans) !important;
+  .op-left-controls,
+  .op-right-controls {
+    padding: 10px 0 10px 0 !important;
   }
 
   .op-gradient-bottom {
-    background: none !important;
+    background: var(--color-base-300) !important;
+  }
+
+  .op-setting-panel {
+    background: var(--color-base-100) !important;
   }
 
   .op-message-box,
-  .op-progressbar,
-  .op-spinner-container,
+  .op-progressbar-container,
+  .op-spinner,
   .op-setting-item[op-panel-type="speed"] {
     display: none !important;
   }
 </style>
 
 <script>
-  import Hls from "hls.js";
-  import OvenPlayer from "ovenplayer";
+  import Hls from "hls.js"
+  import OvenPlayer, { type OvenPlayerInstance } from "ovenplayer"
 
   declare global {
     interface Window {
-      Hls: object;
+      Hls: object
     }
   }
 
-  window.Hls = Hls; // Serve from embedded module instead of CDN
+  window.Hls = Hls // Serve from embedded module instead of CDN
 
-  const timeout = 5 * 1000; // Milliseconds
+  const timeout = 5 * 1000 // Milliseconds
+
+  // Force retry after timeout
+  const retry = (player: OvenPlayerInstance): NodeJS.Timeout =>
+    setTimeout(() => {
+      player.stop()
+      player.play()
+    }, timeout)
+
+  // Toggle element visibility
+  const hide = (element: Element) => element.classList.add("hidden")
+  const show = (element: Element) => element.classList.remove("hidden")
 
   const player = OvenPlayer.create("player", {
     autoFallback: false,
-    autoStart: true,
+    autoStart: false, // Assume browser requires click to start playback
     disableSeekUI: true,
-    expandFullScreenUI: false,
-    showBigPlayButton: false,
     playbackRates: [1], // Disable playback rate options, element hidden in styles
+    showBigPlayButton: true,
+    webrtcConfig: { connectionTimeout: timeout },
+    hlsConfig: { testBandwidth: false }, // BUG: https://github.com/OvenMediaLabs/OvenPlayer/issues/419
     sources: [
       // Prefer WebRTC over LLHLS
       {
         label: "WebRTC",
         type: "webrtc",
-        file: "wss://stream.bjork.tech/live/stream/adaptive",
+        file: "wss://stream.bjork.tech/live/stream/default",
       },
       {
         label: "LLHLS",
         type: "llhls",
-        file: "https://stream.bjork.tech/live/stream/adaptive.m3u8",
+        file: "https://stream.bjork.tech/live/stream/default.m3u8",
       },
     ],
-    webrtcConfig: {
-      connectionTimeout: timeout,
-    },
-  });
+  })
 
   // Wait for player API to be ready
   player.on("ready", () => {
-    const offline = document.querySelector("#offline");
+    const offline = document.querySelector("#offline")
 
     if (offline) {
-      let retry: NodeJS.Timeout;
+      let timer: NodeJS.Timeout
 
+      // Handle player state changes
       player.on("stateChanged", (event) => {
         switch (event.newstate) {
+          // Stream offline or otherwise unreachable
           case "error":
-            // Toggle elements when offline
-            player.getMediaElement().classList.add("hidden");
-            offline.classList.remove("hidden");
+            show(offline)
+            timer = retry(player)
+            break
+          // Player initializing, can hang indefinitely if stream is offline
           case "loading":
+            timer = retry(player)
+            break
+          // Internal player timeout triggered, doesn't handle every case
           case "stalled":
-            // Force retry after timeout
-            retry = setTimeout(() => {
-              player.stop(); // Stop player to avoid infinite loading state
-              player.play();
-            }, timeout);
-            break;
+            timer = retry(player)
+            break
+          // Player successfully connected to stream
           case "playing":
-            clearTimeout(retry); // Ensure retry timer is cleared
-
-            // Toggle elements when online
-            offline.classList.add("hidden");
-            player.getMediaElement().classList.remove("hidden");
-            break;
-          case "paused":
-            // BUG: LLHLS stop() causes stalled state until next release
-            // https://github.com/AirenSoft/OvenPlayer/issues/454
-            player.stop(); // Stop player to avoid extraneous network usage
-            break;
+            clearTimeout(timer) // Ensure retry timer is cleared to avoid interruption
+            hide(offline)
+            break
         }
-      });
+      })
     }
 
     // Toggle play/pause on video element click
     player.on("clicked", (event) => {
       if (event.target == player.getMediaElement()) {
-        player.getState() === "paused" ? player.play() : player.pause();
+        if (player.getState() !== "playing") {
+          player.play()
+          player.seek(0) // Ensure realtime on play
+        } else {
+          player.pause()
+        }
       }
-    });
-  });
+    })
+
+    // Resize player to active stream aspect ratio
+    // https://github.com/OvenMediaLabs/OvenPlayer/blob/6ea7c520531362cdd06a814ce7c9d81e63fab7e9/src/js/view/view.js#L396
+    player.on("qualityLevelChanged", (event) => {
+      const quality = player.getQualityLevels()[event.currentQuality]
+      const ratio = (quality.height / quality.width) * 100
+      const element = document.querySelector<HTMLElement>(".op-ratio")
+      if (element) element.style.setProperty("padding-bottom", `${ratio}%`)
+      player.play() // Player is paused when quality changed
+    })
+  })
 </script>
