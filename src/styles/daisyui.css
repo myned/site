@@ -12,11 +12,7 @@ https://daisyui.com/theme-generator/#theme=eJyVlPFqgzAQxl9FhMEG9TAxUbO3SfVcZdZIo
   default: true;
 
   --color-base-100: var(--color-solar-base02);
-  --color-base-200: color-mix(
-    in oklch,
-    var(--color-solar-base02),
-    var(--color-solar-base03) 50%
-  );
+  --color-base-200: color-mix(in oklch, var(--color-solar-base02), var(--color-solar-base03) 50%);
   --color-base-300: var(--color-solar-base03);
   --color-base-content: var(--color-solar-base1);
   --color-primary: var(--color-solar-base1);

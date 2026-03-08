@@ -1,7 +1,7 @@
 ---
 // https://github.com/Eyevinn/webrtc-player
 
-const { class: className, ...rest } = Astro.props;
+const { class: className, ...rest } = Astro.props
 ---
 
 <div class:list={["content-center", "h-full", "bg-base-300", className]} {...rest}>
@@ -10,10 +10,10 @@ const { class: className, ...rest } = Astro.props;
 </div>
 
 <script>
-  import { WebRTCPlayer } from "@eyevinn/webrtc-player";
+  import { WebRTCPlayer } from "@eyevinn/webrtc-player"
 
-  const offline = document.querySelector<HTMLHeadingElement>("#offline");
-  const video = document.querySelector("video");
+  const offline = document.querySelector<HTMLHeadingElement>("#offline")
+  const video = document.querySelector("video")
 
   if (offline && video) {
     const player = new WebRTCPlayer({
@@ -22,18 +22,18 @@ const { class: className, ...rest } = Astro.props;
       type: "whep",
       statsTypeFilter: "^inbound-rtp$", // RegEx
       timeoutThreshold: 5 * 1000, // Milliseconds
-    });
+    })
 
     await player.load(new URL("https://stream.bjork.tech/rtc/v1/whep/?app=live&stream=livestream"));
 
     player.on("media-recovered", () => {
-      offline.classList.add("hidden");
-      video.classList.remove("hidden");
-    });
+      offline.classList.add("hidden")
+      video.classList.remove("hidden")
+    })
 
     player.on("no-media", () => {
-      video.classList.add("hidden");
-      offline.classList.remove("hidden");
-    });
+      video.classList.add("hidden")
+      offline.classList.remove("hidden")
+    })
   }
 </script>
