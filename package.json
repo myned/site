@@ -1,17 +1,19 @@
 {
   "name": "site",
   "type": "module",
-  "version": "1",
+  "version": "0.0.0",
+  "bin": "./dist/server/entry.mjs",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "astro": "astro",
     "build": "astro build",
+    "dev": "astro dev",
     "preview": "astro preview",
-    "astro": "astro"
+    "start": "node ./dist/server/entry.mjs"
   },
   "dependencies": {
-    "@astrojs/starlight": "~0.34",
+    "@astrojs/node": "~9.5",
     "@astrojs/starlight-tailwind": "~4.0",
+    "@astrojs/starlight": "~0.34",
     "@eyevinn/webrtc-player": "~0.13",
     "@tailwindcss/vite": "~4.2",
     "@types/ovenplayer": "~0.10",
@@ -19,8 +21,8 @@
     "daisyui": "~5.0",
     "hls.js": "~1.6",
     "ovenplayer": "~0.10",
-    "prettier": "~3.5",
     "prettier-plugin-astro": "~0.14",
+    "prettier": "~3.5",
     "tailwindcss": "~4.2",
     "vite": "~6.4"
   }

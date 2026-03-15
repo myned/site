@@ -1,4 +1,5 @@
 // @ts-check
+import node from "@astrojs/node";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
@@ -58,4 +59,9 @@ export default defineConfig({
     //   ],
     // }),
   ],
+
+  // https://docs.astro.build/en/guides/integrations-guide/node/
+  adapter: node({
+    mode: "standalone",
+  }),
 });
