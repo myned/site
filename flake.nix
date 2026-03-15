@@ -1,0 +1,44 @@
+{
+  inputs = {
+    flake-parts.url = "github:hercules-ci/flake-parts"; # https://flake.parts/index.html
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+  };
+
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
+
+      # https://wiki.nixos.org/wiki/Node.js
+      # https://zackmyers.io/blog/deploy-astro-on-nixos/
+      perSystem = {
+        lib,
+        pkgs,
+        ...
+      }: {
+        #?? nix shell
+        packages.default = pkgs.buildNpmPackage {
+          name = "site";
+          src = ./.;
+          npmDepsHash = "sha256-d/on3rwkk+nE/Ij9uZQkPVwDCvrOu8wwtGdh56cnVBc=";
+
+          meta = with lib; {
+            description = "Personal website, built with Astro";
+            homepage = "https://git.bjork.tech/myned/site";
+            license = licenses.mit;
+            platforms = platforms.linux;
+            mainProgram = "site";
+          };
+        };
+
+        #?? nix develop
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            nodejs
+          ];
+        };
+      };
+    };
+}
