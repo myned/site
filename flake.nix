@@ -22,22 +22,15 @@
         packages.default = pkgs.buildNpmPackage {
           name = "site";
           src = ./.;
-          npmDepsHash = "sha256-d/on3rwkk+nE/Ij9uZQkPVwDCvrOu8wwtGdh56cnVBc=";
+          npmDepsHash = "sha256-ssExj4t6jF0HM6oSHKTHGNdNZviHEQJpBJFUJ8wkdqE=";
 
           meta = with lib; {
-            description = "Personal website, built with Astro";
+            description = "Personal website, built with Astro and served by Node.js";
             homepage = "https://git.bjork.tech/myned/site";
             license = licenses.mit;
             platforms = platforms.linux;
             mainProgram = "site";
           };
-        };
-
-        #?? nix develop
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            nodejs
-          ];
         };
       };
     };
