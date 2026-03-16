@@ -11,10 +11,10 @@
 #   SSH_HOST_PORT
 #   SSH_KNOWN_HOST #?? ssh-keyscan -p <port> <host>
 
-on:
-  push:
-    branches:
-      - production
+# on:
+#   push:
+#     branches:
+#       - production
 
 jobs:
   deploy:
