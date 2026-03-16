@@ -57,10 +57,6 @@ const { class: className, ...rest } = Astro.props
     }
   }
 
-  window.Hls = Hls // Serve from embedded module instead of CDN
-
-  const timeout = 5 * 1000 // Milliseconds
-
   // Force retry after timeout
   const retry = (player: OvenPlayerInstance): NodeJS.Timeout =>
     setTimeout(() => {
@@ -72,10 +68,18 @@ const { class: className, ...rest } = Astro.props
   const hide = (element: Element) => element.classList.add("hidden")
   const show = (element: Element) => element.classList.remove("hidden")
 
+  window.Hls = Hls // Serve from embedded module instead of CDN
+  const params = new URLSearchParams(document.location.search)
+  const id = params.get("id") ?? "stream" // Gather target stream from URL
+  const timeout = 5 * 1000 // Milliseconds
+
+  // Gather signed policy URLs
+  const urls = await fetch(`/stream/api/signedpolicy.json?id=${id}`).then((response) => response.json())
+
   const player = OvenPlayer.create("player", {
-    autoFallback: false,
+    autoFallback: false, // Client fallback can trigger before ABR has a chance to take effect
     autoStart: false, // Assume browser requires click to start playback
-    disableSeekUI: true,
+    disableSeekUI: true, // Always realtime
     playbackRates: [1], // Disable playback rate options, element hidden in styles
     showBigPlayButton: true,
     webrtcConfig: { connectionTimeout: timeout },
@@ -85,12 +89,12 @@ const { class: className, ...rest } = Astro.props
       {
         label: "WebRTC",
         type: "webrtc",
-        file: "wss://stream.bjork.tech/live/stream/default",
+        file: urls.webrtc_url,
       },
       {
         label: "LLHLS",
         type: "llhls",
-        file: "https://stream.bjork.tech/live/stream/default.m3u8",
+        file: urls.llhls_url,
       },
     ],
   })
@@ -143,10 +147,10 @@ const { class: className, ...rest } = Astro.props
     // https://github.com/OvenMediaLabs/OvenPlayer/blob/6ea7c520531362cdd06a814ce7c9d81e63fab7e9/src/js/view/view.js#L396
     player.on("qualityLevelChanged", (event) => {
       const quality = player.getQualityLevels()[event.currentQuality]
-      const ratio = (quality.height / quality.width) * 100
+      const ratio = (quality.height / quality.width) * 100 // %
       const element = document.querySelector<HTMLElement>(".op-ratio")
       if (element) element.style.setProperty("padding-bottom", `${ratio}%`)
-      player.play() // Player is paused when quality changed
+      player.play() // Player is paused when quality is changed
     })
   })
 </script>
