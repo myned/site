@@ -4,15 +4,10 @@ export const prerender = false
 import base64url from "base64url"
 import { createHmac } from "crypto"
 
-const { PROD, OME_HOST, OME_SECRET_KEY } = import.meta.env
+const { PROD } = import.meta.env
+const { OME_HOST = "", OME_SECRET_KEY = "" } = process.env
 
 export async function GET({ params }: any) {
-  if (!OME_HOST || !OME_SECRET_KEY)
-    return new Response(null, {
-      status: 500,
-      statusText: "Internal Server Error",
-    })
-
   const { host = "origin", app = "live", stream = "stream", playlist = "default" } = params
 
   // https://docs.ovenmediaengine.com/access-control/signedpolicy
