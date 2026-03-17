@@ -10,6 +10,4 @@ Personal website, built with [Astro](https://astro.build/)
 [OKSolar](https://meat.io/oksolar) \
 [OvenPlayer](https://github.com/AirenSoft/OvenPlayer) \
 [Solarized](https://ethanschoonover.com/solarized/) \
-[Starlight](https://starlight.astro.build/) \
-[Tailwind](https://tailwindcss.com/) \
-[webrtc-player](https://github.com/Eyevinn/webrtc-player)
+[Tailwind](https://tailwindcss.com/)

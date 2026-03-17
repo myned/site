@@ -1,10 +1,8 @@
 /* https://tailwindcss.com/ */
 
-@layer base, starlight, theme, components, utilities, overrides;
+@layer base, theme, components, utilities, overrides;
 
 @import "tailwindcss";
-@import "@astrojs/starlight-tailwind";
-@import "./starlight.css";
 @import "./daisyui.css";
 @import "./solarized.css";
 

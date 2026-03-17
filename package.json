@@ -12,9 +12,6 @@
   },
   "dependencies": {
     "@astrojs/node": "~9.5",
-    "@astrojs/starlight-tailwind": "~4.0",
-    "@astrojs/starlight": "~0.34",
-    "@eyevinn/webrtc-player": "~0.13",
     "@tailwindcss/vite": "~4.2",
     "@types/ovenplayer": "~0.10",
     "astro": "~5.18",
