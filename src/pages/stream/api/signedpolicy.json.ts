@@ -1,5 +1,5 @@
 // https://docs.astro.build/en/guides/endpoints/
-// https://docs.ovenmediaengine.com/access-control/signedpolicy
+export const prerender = false
 
 import base64url from "base64url"
 import { createHmac } from "crypto"
@@ -15,6 +15,7 @@ export async function GET({ params }: any) {
 
   const { host = "origin", app = "live", stream = "stream", playlist = "default" } = params
 
+  // https://docs.ovenmediaengine.com/access-control/signedpolicy
   // https://github.com/OvenMediaLabs/OvenMediaEngine/blob/master/misc/signed_policy_url_generator.js
   const expire = Date.now() + 24 * 60 * 60 * 1000 // Now + 24 hours
   const policy = base64url(Buffer.from(`{"url_expire": ${expire}}`))
