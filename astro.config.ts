@@ -10,7 +10,6 @@ export default defineConfig({
 
   // https://docs.astro.build/en/reference/configuration-reference/#vite
   vite: {
-    ssr: { noExternal: true }, // https://docs.astro.build/en/guides/troubleshooting/#adding-dependencies-to-astro-in-a-monorepo
     build: { chunkSizeWarningLimit: 1500 }, // Default: 500 KiB
     plugins: [tailwindcss()],
   },
