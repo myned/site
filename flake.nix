@@ -22,7 +22,7 @@
         packages.default = pkgs.buildNpmPackage {
           name = "site";
           src = ./.;
-          npmDepsHash = "sha256-ssExj4t6jF0HM6oSHKTHGNdNZviHEQJpBJFUJ8wkdqE=";
+          npmDepsHash = "sha256-qJb/RN2DQICzQZYXAcegoNrzwbM1+nQpmkmjMpexJZs=";
 
           meta = with lib; {
             description = "Personal website, built with Astro and served by Node.js";
