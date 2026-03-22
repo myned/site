@@ -151,7 +151,7 @@ const { class: className, ...rest } = Astro.props
       const ratio = (quality.height / quality.width) * 100 // %
       const element = document.querySelector<HTMLElement>(".op-ratio")
       if (element) element.style.setProperty("padding-bottom", `${ratio}%`)
-      player.play() // Player is paused when quality is changed
+      // player.play() // Player is paused when quality is changed
     })
   })
 </script>
