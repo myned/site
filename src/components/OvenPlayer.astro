@@ -69,12 +69,12 @@ const { class: className, ...rest } = Astro.props
   const show = (element: Element) => element.classList.remove("hidden")
 
   window.Hls = Hls // Serve from embedded module instead of CDN
-  const params = new URLSearchParams(document.location.search)
-  const id = params.get("id") ?? "stream" // Gather target stream from URL
+  const searchParams = new URLSearchParams(document.location.search)
+  const id = searchParams.get("id") ?? "stream" // Gather target stream from URL
   const timeout = 5 * 1000 // Milliseconds
 
   // Gather signed policy URLs
-  const urls = await fetch(`/stream/api/signedpolicy.json?id=${id}`).then((response) => response.json())
+  const urls = await fetch(`/stream/api/${id}.json`).then((response) => response.json())
 
   const player = OvenPlayer.create("player", {
     autoFallback: false, // Client fallback can trigger before ABR has a chance to take effect
