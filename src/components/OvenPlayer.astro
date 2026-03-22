@@ -8,7 +8,11 @@ const { class: className, ...rest } = Astro.props
 
 <div id="player-container" class:list={["relative", className]} {...rest}>
   <div id="player"></div>
-  <h1 id="offline" class="hidden absolute top-1/2 left-1/2 -translate-1/2 text-center text-2xl font-bold">Offline</h1>
+  <h1
+    id="offline"
+    class="hidden absolute z-5 top-1/2 left-1/2 -translate-1/2 text-center text-2xl font-bold pointer-events-none">
+    Offline
+  </h1>
 </div>
 
 <style is:global>
@@ -37,6 +41,11 @@ const { class: className, ...rest } = Astro.props
 
   .op-setting-panel {
     background: var(--color-base-100) !important;
+  }
+
+  .op-thumbnail-container {
+    background: var(--color-base-300);
+    opacity: 0.5;
   }
 
   .op-message-box,
