@@ -83,7 +83,8 @@ const { class: className, ...rest } = Astro.props
     playbackRates: [1], // Disable playback rate options, element hidden in styles
     showBigPlayButton: true,
     webrtcConfig: { connectionTimeout: timeout },
-    hlsConfig: { testBandwidth: false }, // BUG: https://github.com/OvenMediaLabs/OvenPlayer/issues/419
+    // hlsConfig: { testBandwidth: false }, // BUG: https://github.com/OvenMediaLabs/OvenPlayer/issues/419
+    image: urls.thumbnail_url,
     sources: [
       // Prefer WebRTC over LLHLS
       {

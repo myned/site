@@ -16,21 +16,29 @@ export async function GET({ params, request }: any) {
   // https://github.com/OvenMediaLabs/OvenMediaEngine/blob/master/misc/signed_policy_url_generator.js
   const expire = Date.now() + 24 * 60 * 60 * 1000 // Now + 24 hours
   const policy = base64url(Buffer.from(`{"url_expire": ${expire}}`)) // Common base64-encoded policy JSON
+  const thumbnailUrl = `http://${OME_HOST}/${app}/${id}_preview/thumb.png?policy=${policy}` // Thumbnail policy URL
   const webrtcUrl = `ws://${OME_HOST}/${app}/${id}/${playlist}?policy=${policy}` // WebRTC policy URL
   const llhlsUrl = `http://${OME_HOST}/${app}/${id}/${playlist}.m3u8?policy=${policy}` // LLHLS policy URL
+  const thumbnailSignature = base64url(createHmac("sha1", OME_SECRET_KEY).update(thumbnailUrl).digest()) // Thumbnail base64-encoded HMAC
   const webrtcSignature = base64url(createHmac("sha1", OME_SECRET_KEY).update(webrtcUrl).digest()) // WebRTC base64-encoded HMAC
   const llhlsSignature = base64url(createHmac("sha1", OME_SECRET_KEY).update(llhlsUrl).digest()) // LLHLS base64-encoded HMAC
+  const signedThumbnailUrl = `${thumbnailUrl}&signature=${thumbnailSignature}` // Thumbnail signed URL
   const signedWebrtcUrl = `${webrtcUrl}&signature=${webrtcSignature}` // WebRTC signed URL
   const signedLlhlsUrl = `${llhlsUrl}&signature=${llhlsSignature}` // LLHLS signed URL
 
   // Support TLS reverse proxy upstream (requires Host header rewrite in proxy)
   // https://github.com/OvenMediaLabs/OvenMediaEngine/issues/448#issuecomment-885447613
+  const finalThumbnailUrl =
+    OME_HOST == PROXY_HOST
+      ? signedThumbnailUrl
+      : signedThumbnailUrl.replace(`http://${OME_HOST}`, `https://${PROXY_HOST}`)
   const finalWebrtcUrl =
     OME_HOST == PROXY_HOST ? signedWebrtcUrl : signedWebrtcUrl.replace(`ws://${OME_HOST}`, `wss://${PROXY_HOST}`)
   const finalLlhlsUrl =
     OME_HOST == PROXY_HOST ? signedLlhlsUrl : signedLlhlsUrl.replace(`http://${OME_HOST}`, `https://${PROXY_HOST}`)
 
   const response = JSON.stringify({
+    thumbnail_url: finalThumbnailUrl,
     webrtc_url: finalWebrtcUrl,
     llhls_url: finalLlhlsUrl,
     // expires: expire,
